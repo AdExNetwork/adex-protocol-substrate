@@ -5,22 +5,31 @@ use runtime_primitives::traits::Member;
 
 pub trait Trait: balances::Trait {}
 
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize, Debug))]
-#[derive(Encode, Decode, Clone, PartialEq, Eq)]
-pub struct Channel<AccountId, Balance> where AccountId: Member, Balance: Member {
-	#[cfg_attr(feature = "std", serde(deserialize_with="AccountId::deserialize"))]
+#[derive(Debug)]
+pub struct Channel<AccountId, Balance> {
     creator: AccountId,
-	#[cfg_attr(feature = "std", serde(deserialize_with="Balance::deserialize"))]
     deposit: Balance,
-    //validators: Vec<AccountId>,
     valid_until: u64,
+    validators: Vec<AccountId>,
     spec: Vec<u8>,
 }
 
 decl_module! {
 	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-		fn channel_start(origin, channel: Channel<T::AccountId, T::AccountId>) -> Result {
+        // @TODO should valid_until be some sort of substrate-specific lifetime value?
+		fn channel_start(origin, deposit: T::Balance,  valid_until: u64, validators: Vec<T::AccountId>, spec: Vec<u8>) -> Result {
+            // @TODO: move this to impl<T: Trait> Module<T>
             let sender = ensure_signed(origin)?;
+
+            let channel = Channel {
+                creator: sender,
+                deposit: deposit,
+                valid_until: valid_until,
+                validators: validators,
+                spec: spec,
+            };
+
+            println!("{:?}", channel);
 
 		    //<balances::Module<T>>::decrease_free_balance(&sender, payment)?;
 		    Ok(())
