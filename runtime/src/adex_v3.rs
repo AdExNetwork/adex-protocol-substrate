@@ -36,6 +36,13 @@ decl_module! {
         }
 		//fn channel_finalize(origin, channel: Commitment<T::AccountId, T::Balance>) -> Result;
 	}
+
+    fn channel_withdraw_expired(origin, deposit: T::Balance,  valid_until: u64, validators: Vec<T::AccountId>, spec: Vec<u8>) -> Result {
+    }
+
+    //  bytes32 stateRoot, bytes32[3][] memory signatures, bytes32[] memory proof, uint amountInTree
+    fn channel_withdraw(origin, deposit: T::Balance,  valid_until: u64, validators: Vec<T::AccountId>, spec: Vec<u8>) -> Result {
+    }
 }
 
 decl_storage! {
